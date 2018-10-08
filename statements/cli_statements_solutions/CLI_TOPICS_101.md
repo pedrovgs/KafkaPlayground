@@ -40,5 +40,5 @@ kafka-topics --zookeeper localhost:2181 --list
 
 There are some details to keep in mind while resolving this exercise:
 
- * You'll need to install kafka locally to run the cli tools from your computer or execute these commans from the broker instance itself. This is an example: ``docker-compose exec broker kafka-topics --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic topic-1 ``
+ * You'll need to install kafka locally to run the cli tools from your computer or execute these commans from the broker instance itself. This is an example: ``docker-compose exec broker kafka-topics --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic topic-1``.
  * The replication factor can't be greater than the number of brokers initialized in our cluster.
