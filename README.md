@@ -1,6 +1,6 @@
 # Apache Kafka Playground [![Build Status](https://travis-ci.com/pedrovgs/KafkaPlayground.svg?branch=master)](https://travis-ci.com/pedrovgs/KafkaPlayground)
 
-Playground used to learn and experiment with [Apache Kafka](https://kafka.apache.org/) using [Scala](https://www.scala-lang.org/). Do you want to learn Apache Kafka? Try to resolve the exercised proposed :smiley:
+Playground used to learn and experiment with [Apache Kafka](https://kafka.apache.org/) using [Scala](https://www.scala-lang.org/). Do you want to learn Apache Kafka? Try to resolve the proposed exercises :smiley:
 
 ![Kafka Logo](./art/kafkaLogo.png)
 
