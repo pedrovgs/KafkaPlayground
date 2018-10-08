@@ -10,6 +10,15 @@ Apache Kafka is used for building real-time data pipelines and streaming apps. I
 
 This highly-scalable publish-subscribe messaging system that can serve as the data backbone in distributed applications. With Kafka’s Producer-Consumer model it becomes easy to implement multiple data consumers that do live monitoring as well persistent data storage for later analysis.
 
+## Exercises
+
+This table contains all the exercises resolved in this repository sorted by goals with links for the solution and the specs.
+
+| # | Goal | Statement | Code | Tests |
+| - | ---- | --------- | ---- | ----- |
+| 1 | Learn how to handle topics using ``kafka-cli`` tools. | [CLI TOPICS 101.](./statements/CLI_TOPICS_101.md) | [CLI TOPICS 101.](./statements/cli_statements_solutions/CLI_TOPICS_101.md) | - |
+
+
 ## Install Apache Kafka with Docker
 
 Thanks to the usage of docker we can simplify the usage of Kafka for this playground. You just need to move to the folder named ``docker`` and start all the required instances.
