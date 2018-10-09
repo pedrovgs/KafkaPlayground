@@ -20,6 +20,7 @@ This table contains all the exercises resolved in this repository sorted by goal
 | 2 | Learn how to produce and cosume messages using ``kafka-cli`` tools. | [CLI PRODUCER AND CONSUMER.](./statements/CLI_PRODUCER_CONSUMER.md) | [CLI PRODUCER AND CONSUMER.](./statements/cli_statements_solutions/CLI_PRODUCER_CONSUMER.md) | - |
 | 3 | Learn how to use consumers in group using ``kafka-cli`` tools. | [CLI CONSUMERS GROUP.](./statements/CLI_CONSUMERS_GROUPS.md) | [CLI CONSUMERS GROUP.](./statements/cli_statements_solutions/CLI_CONSUMERS_GROUPS.md) | - |
 | 4 | Learn how to use kafka consumer groups ``kafka-cli`` tools. | [CLI CONSUMERS GROUPS 2.](./statements/CLI_CONSUMERS_GROUPS_2.md) | [CLI CONSUMERS GROUPS 2.](./statements/cli_statements_solutions/CLI_CONSUMERS_GROUPS_2.md) | - |
+| 5 | Learn how to use Kafka Tool app. | [KAFKA TOOL.](./statements/KAFKA_TOOL.md) | - | - |
 
 
 ## Install Apache Kafka with Docker
