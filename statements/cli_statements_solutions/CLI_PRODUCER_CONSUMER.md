@@ -77,6 +77,3 @@ kafka-console-consumer --bootstrap-server localhost:29092 --topic new-users --fr
 Pay attention to the ``--bootstrap-server`` param, which is equivalent to the ``--brokers-list`` we used in the past. The parameter named ``--from-beginning`` let's you read all messages posted into the topic since it was created. If you don't specify it you'll start consuming only new messages.
 
 **Important detail:** If you review the order the messages are printed in the consumer terminal you could see how the order could not be correct. This is because Kafka only guarantees the order per partition. If you want all the mensages ordered properly you can create your topic with just one partition.
-
-
-
