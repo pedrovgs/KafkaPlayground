@@ -18,6 +18,7 @@ This table contains all the exercises resolved in this repository sorted by goal
 | - | ---- | --------- | ---- | ----- |
 | 1 | Learn how to handle topics using ``kafka-cli`` tools. | [CLI TOPICS 101.](./statements/CLI_TOPICS_101.md) | [CLI TOPICS 101.](./statements/cli_statements_solutions/CLI_TOPICS_101.md) | - |
 | 2 | Learn how to produce and cosume messages using ``kafka-cli`` tools. | [CLI PRODUCER AND CONSUMER.](./statements/CLI_PRODUCER_CONSUMER.md) | [CLI PRODUCER AND CONSUMER.](./statements/cli_statements_solutions/CLI_PRODUCER_CONSUMER.md) | - |
+| 3 | Learn how to use consumers in group using ``kafka-cli`` tools. | [CLI CONSUMERS GROUP.](./statements/CLI_CONSUMERS_GROUPS.md) | [CLI PRODUCER AND CONSUMER.](./statements/cli_statements_solutions/V.md) | - |
 
 
 ## Install Apache Kafka with Docker
@@ -29,7 +30,7 @@ cd docker
 docker-compose up
 ```
 
-This might take a while, so I'd recommend you to grab a :cofee:.
+This might take a while, so I'd recommend you to grab a :coffee:.
 
 After that, a Zookeeper instance and a Kafka broker will be initialized. Once the instances are up and running you can test the execution by running the following comands:
 
