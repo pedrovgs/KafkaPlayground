@@ -17,6 +17,7 @@ This table contains all the exercises resolved in this repository sorted by goal
 | # | Goal | Statement | Code | Tests |
 | - | ---- | --------- | ---- | ----- |
 | 1 | Learn how to handle topics using ``kafka-cli`` tools. | [CLI TOPICS 101.](./statements/CLI_TOPICS_101.md) | [CLI TOPICS 101.](./statements/cli_statements_solutions/CLI_TOPICS_101.md) | - |
+| 2 | Learn how to produce and cosume messages using ``kafka-cli`` tools. | [CLI PRODUCER AND CONSUMER.](./statements/CLI_PRODUCER_CONSUMER.md) | [CLI PRODUCER AND CONSUMER.](./statements/cli_statements_solutions/CLI_PRODUCER_CONSUMER.md) | - |
 
 
 ## Install Apache Kafka with Docker
