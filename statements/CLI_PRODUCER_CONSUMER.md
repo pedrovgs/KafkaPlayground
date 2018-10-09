@@ -1,6 +1,6 @@
 # Producing and consuming messages.
 
-Learning how to use the CLI tools Kafka provides is really important and it will help you to interact with a Kafka cluster and understand what's going on in real time. For this exercise, there are at least 2 tasks you should know how to perform using Kafka CLI tools: post a message into a topic and read a message from a topic.
+Learning how to use the CLI tools Kafka provides is really important and it will help you to interact with a Kafka cluster and understand what's going on in real time. For this exercise, there are some tasks you should know how to perform using Kafka CLI tools for producing and consuming messages.
 
 Using just the command line could you perform the following tasks?
 
