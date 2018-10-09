@@ -10,7 +10,3 @@ Using just the command line could you perform the following tasks?
 * Produce another 10 messages for the topic "new-users" without creating the topic before.
 * Describe the topic information for the topic "new-users".
 * Consume the message posted from the beginning.
-
-Extra tasks:
-
-*
