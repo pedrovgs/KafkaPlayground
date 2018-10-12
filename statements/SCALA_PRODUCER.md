@@ -2,7 +2,7 @@
 
 Two hours ago the speed force barrier exploded and some unknown force affected The Flash. We don't know where this new force comes from, we only know this speed force is called "the negative speed force". Since then The Flash is missing. Every day our friend is shown, Kid Flash tries to catch The Flash, but he's still the fastest man alive.
 
-![negativeFlash](../art/flashNegativeSpeedForce)
+![negativeFlash](../art/flashNegativeSpeedForce.png)
 
 Thanks our friends at Star Labs we've created a program that let us know when a Tweet about the Flash has been published. However, we don't know how these tweets are related our friend and where these tweets where published. We need your help to post all these tweets into our Kafka cluster so our machine learning experts can study and find any pattern trying to predict the next The Flash location.
 
