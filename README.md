@@ -116,6 +116,23 @@ From another terminal execute this command and you'll see how the messages sent 
 kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
 ```   
 
+## Running Scala code
+
+Inside the scala folder you'll find a sbt project using Kafka intensively. This project uses a Twitter client as data source so configuring the access to this platform throug this API is needed. To do this you only need to create a Twitter app from [this page](https://apps.twitter.com) and add a ``src/main/resources/application.conf`` file to your ``scala`` folder with the following content:
+
+```
+twitter {
+  consumer {
+    key = "my-consumer-key"
+    secret = "my-consumer-secret"
+  }
+  access {
+    key = "my-access-key"
+    secret = "my-access-secret"
+  }
+}
+```
+
 Developed By
 ------------
 
