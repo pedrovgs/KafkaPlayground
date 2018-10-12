@@ -74,4 +74,15 @@ class TheFlashTweetsProducerSpec
     records.head.value shouldBe expectedMessage
   }
 
+  it should "send a not geo-located tweet to a topic and another geo-located to the other topic configured" in {
+    producer(anyNotGeoLocatedTweet).futureValue
+    producer(anyGeoLocatedTweet).futureValue
+
+    val locatedTopicRecords = recordsForTopic(locatedFlashTopic)
+    val unknownLocationTopicRecords = recordsForTopic(unknownLocationFlashTopic)
+
+    locatedTopicRecords.size shouldBe 1
+    unknownLocationTopicRecords.size shouldBe 1
+  }
+
 }
