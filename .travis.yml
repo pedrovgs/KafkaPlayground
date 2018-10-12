@@ -18,6 +18,6 @@ before_install:
   - cd scala
 
 script:
-  - sbt scalafmt::test
-  - sbt test:scalafmt::test
+  - sbt scalafmtCheck
+  - sbt test:scalafmtCheck
   - sbt test

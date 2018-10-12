@@ -9,10 +9,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object TheFlashTweetsProducer {
   private val unknownLocationFlashTopic = "the-flash-tweets"
-  private val locatedFlashTopic = "the-flash-tweets-with-location"
+  private val locatedFlashTopic         = "the-flash-tweets-with-location"
 }
 
-class TheFlashTweetsProducer(private val brokerAddress: String, implicit val ec: ExecutionContext = ExecutionContext.global) {
+class TheFlashTweetsProducer(private val brokerAddress: String,
+                             implicit val ec: ExecutionContext = ExecutionContext.global) {
 
   import TheFlashTweetsProducer._
 
@@ -23,14 +24,13 @@ class TheFlashTweetsProducer(private val brokerAddress: String, implicit val ec:
   def apply(tweet: Tweet): Future[Tweet] =
     tweet.geo match {
       case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
-      case _ => sendUnknownLocationFlashAdvertisement(tweet)
+      case _                 => sendUnknownLocationFlashAdvertisement(tweet)
     }
 
   private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] =
     sendRecordToProducer(
       topic = locatedFlashTopic,
-      message =
-        s"""
+      message = s"""
            |{
            |  "latitude": ${coordinates.coordinates.head},
            |  "longitude": ${coordinates.coordinates.last},
@@ -45,7 +45,6 @@ class TheFlashTweetsProducer(private val brokerAddress: String, implicit val ec:
       topic = unknownLocationFlashTopic,
       message = tweet.text
     ).map(_ => tweet)
-
 
   private def sendRecordToProducer(topic: String, message: String) =
     flashProducer.send(

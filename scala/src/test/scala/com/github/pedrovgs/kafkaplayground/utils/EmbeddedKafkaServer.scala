@@ -49,24 +49,23 @@ trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
     topics.foreach(topic => recordsForTopic(topic))
 
   def recordsForTopic(topic: String): Iterable[ConsumerRecord[String, String]] = {
-    val baseConfig = ConfigFactory.parseString(
-      s"""
+    val baseConfig = ConfigFactory.parseString(s"""
          |{
          |  bootstrap.servers = "localhost:${kafkaServer.kafkaPort}"
          |}
        """.stripMargin)
-    val consumer = KafkaConsumer(KafkaConsumer.Conf(
-      ConfigFactory.parseString(
-        s"""
+    val consumer = KafkaConsumer(
+      KafkaConsumer.Conf(
+        ConfigFactory.parseString(s"""
            |{
            |  topics = ["$topic"]
            |  group.id = "testing-consumer"
            |  auto.offset.reset = "earliest"
            |}
           """.stripMargin).withFallback(baseConfig),
-      keyDeserializer = new StringDeserializer(),
-      valueDeserializer = new StringDeserializer()
-    ))
+        keyDeserializer = new StringDeserializer(),
+        valueDeserializer = new StringDeserializer()
+      ))
     consumer.subscribe(List(topic).asJava)
     val records = consumer.poll(10.second.toMillis).asScala
     consumer.commitSync()

@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 object TheFlashTweetsProducerSpec {
   private val unknownLocationFlashTopic = "the-flash-tweets"
-  private val locatedFlashTopic = "the-flash-tweets-with-location"
+  private val locatedFlashTopic         = "the-flash-tweets-with-location"
   private val anyNotGeoLocatedTweet = Tweet(
     created_at = new Date(),
     id = 1L,
@@ -24,14 +24,15 @@ object TheFlashTweetsProducerSpec {
 }
 
 class TheFlashTweetsProducerSpec
-  extends FlatSpec
+    extends FlatSpec
     with Matchers
     with EmbeddedKafkaServer
     with ScalaFutures {
 
   import TheFlashTweetsProducerSpec._
 
-  override val topicsToClearAfterEach: Seq[String] = Seq(locatedFlashTopic, unknownLocationFlashTopic)
+  override val topicsToClearAfterEach: Seq[String] =
+    Seq(locatedFlashTopic, unknownLocationFlashTopic)
 
   private val producer = new TheFlashTweetsProducer(kafkaServerAddress())
 
@@ -78,7 +79,7 @@ class TheFlashTweetsProducerSpec
     producer(anyNotGeoLocatedTweet).futureValue
     producer(anyGeoLocatedTweet).futureValue
 
-    val locatedTopicRecords = recordsForTopic(locatedFlashTopic)
+    val locatedTopicRecords         = recordsForTopic(locatedFlashTopic)
     val unknownLocationTopicRecords = recordsForTopic(unknownLocationFlashTopic)
 
     locatedTopicRecords.size shouldBe 1
