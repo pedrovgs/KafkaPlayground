@@ -21,6 +21,7 @@ This table contains all the exercises resolved in this repository sorted by goal
 | 3 | Learn how to use consumers in group using ``kafka-cli`` tools. | [CLI CONSUMERS GROUP.](./statements/CLI_CONSUMERS_GROUPS.md) | [CLI CONSUMERS GROUP.](./statements/cli_statements_solutions/CLI_CONSUMERS_GROUPS.md) | - |
 | 4 | Learn how to use kafka consumer groups ``kafka-cli`` tools. | [CLI CONSUMERS GROUPS 2.](./statements/CLI_CONSUMERS_GROUPS_2.md) | [CLI CONSUMERS GROUPS 2.](./statements/cli_statements_solutions/CLI_CONSUMERS_GROUPS_2.md) | - |
 | 5 | Learn how to use Kafka Tool app. | [KAFKA TOOL.](./statements/KAFKA_TOOL.md) | - | - |
+| 6 | Learn how to create a Kafka producer written in Scala. | [SCALA PRODUCER.](./statements/SCALA_PRODUCER.md) | [TheFlashTweetsProducer](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/main/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsProducer.scala) | [TheFlashTweetsProducerSpec](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/test/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsProducerSpec.scala) |
 
 
 ## Install Apache Kafka with Docker
@@ -115,6 +116,23 @@ From another terminal execute this command and you'll see how the messages sent 
 ```
 kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
 ```   
+
+## Running Scala code
+
+Inside the scala folder you'll find a sbt project using Kafka intensively. This project uses a Twitter client as data source so configuring the access to this platform throug this API is needed. To do this you only need to create a Twitter app from [this page](https://apps.twitter.com) and add a ``src/main/resources/application.conf`` file to your ``scala`` folder with the following content:
+
+```
+twitter {
+  consumer {
+    key = "my-consumer-key"
+    secret = "my-consumer-secret"
+  }
+  access {
+    key = "my-access-key"
+    secret = "my-access-secret"
+  }
+}
+```
 
 Developed By
 ------------
