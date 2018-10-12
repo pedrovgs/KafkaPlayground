@@ -3,23 +3,50 @@ package com.github.pedrovgs.kafkaplayground.utils
 import cakesolutions.kafka.KafkaConsumer
 import cakesolutions.kafka.testkit.KafkaServer
 import com.typesafe.config.ConfigFactory
-import org.apache.kafka.clients.consumer.{ConsumerRecord, ConsumerRecords}
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Suite}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
-trait EmbeddedKafkaServer {
+trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
+  this: Suite =>
+
+  val topicsToClearAfterEach: Seq[String] = Seq()
 
   private val kafkaServer = new KafkaServer
 
+  override protected def beforeAll(): Unit = {
+    super.beforeAll()
+    startKafkaServer()
+  }
+
+  before {
+    clearTopics()
+  }
+
+  after {
+    clearTopics()
+  }
+
+  override protected def afterAll(): Unit = {
+    stopKafkaServer()
+    super.afterAll()
+  }
+
   def startKafkaServer(): Unit = kafkaServer.startup()
 
-  def stopKafkaServer(): Unit = kafkaServer.close()
+  def stopKafkaServer(): Unit = {
+    kafkaServer.close()
+  }
 
   def kafkaServerAddress(): String = s"localhost:${kafkaServer.kafkaPort}"
 
   def zookeeperServerAddress(): String = s"localhost:${kafkaServer.zookeeperPort}"
+
+  def clearTopics(topics: Seq[String] = topicsToClearAfterEach): Unit =
+    topics.foreach(topic => recordsForTopic(topic))
 
   def recordsForTopic(topic: String): Iterable[ConsumerRecord[String, String]] = {
     val baseConfig = ConfigFactory.parseString(
@@ -41,7 +68,8 @@ trait EmbeddedKafkaServer {
       valueDeserializer = new StringDeserializer()
     ))
     consumer.subscribe(List(topic).asJava)
-    val records = consumer.poll(10.seconds.toMillis).asScala
+    val records = consumer.poll(10.second.toMillis).asScala
+    consumer.commitSync()
     consumer.close()
     records
   }

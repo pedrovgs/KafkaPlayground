@@ -20,34 +20,35 @@ class TheFlashTweetsProducer(private val brokerAddress: String, implicit val ec:
     Conf(new StringSerializer(), new StringSerializer(), bootstrapServers = brokerAddress)
   )
 
-  def apply(tweet: Tweet): Future[Tweet] = {
+  def apply(tweet: Tweet): Future[Tweet] =
     tweet.geo match {
       case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
       case _ => sendUnknownLocationFlashAdvertisement(tweet)
     }
-  }
 
-  private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] = {
-    val message =
-      s"""
-         |{
-         |  "latitude": ${coordinates.coordinates.headOption},
-         |  "longitude": ${coordinates.coordinates.lastOption},
-         |  "id": "${tweet.id}",
-         |  "message": "${tweet.text}"
-         |}
-       """
-    sendRecordToProducer(locatedFlashTopic, tweet, message)
-  }
+  private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] =
+    sendRecordToProducer(
+      topic = locatedFlashTopic,
+      message =
+        s"""
+           |{
+           |  "latitude": ${coordinates.coordinates.head},
+           |  "longitude": ${coordinates.coordinates.last},
+           |  "id": "${tweet.id}",
+           |  "message": "${tweet.text}"
+           |}
+       """.stripMargin
+    ).map(_ => tweet)
 
-  private def sendUnknownLocationFlashAdvertisement(tweet: Tweet): Future[Tweet] = {
-    val message = tweet.text
-    sendRecordToProducer(unknownLocationFlashTopic, tweet, message)
-  }
+  private def sendUnknownLocationFlashAdvertisement(tweet: Tweet): Future[Tweet] =
+    sendRecordToProducer(
+      topic = unknownLocationFlashTopic,
+      message = tweet.text
+    ).map(_ => tweet)
 
-  private def sendRecordToProducer(topic: String, tweet: Tweet, message: String) = {
-    val record =
-      KafkaProducerRecord[String, String](topic = unknownLocationFlashTopic, value = message)
-    flashProducer.send(record).map(_ => tweet)
-  }
+
+  private def sendRecordToProducer(topic: String, message: String) =
+    flashProducer.send(
+      KafkaProducerRecord[String, String](topic = topic, value = message)
+    )
 }
