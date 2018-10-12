@@ -18,7 +18,14 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
   import TheFlashTweetsProducer._
 
   private val flashProducer = KafkaProducer(
-    Conf(new StringSerializer(), new StringSerializer(), bootstrapServers = brokerAddress)
+    Conf(
+      keySerializer = new StringSerializer(),
+      valueSerializer = new StringSerializer(),
+      bootstrapServers = brokerAddress,
+      enableIdempotence = true,
+      lingerMs = 20,
+      batchSize = 32 * 1024
+    ).withProperty("compression.type", "snappy")
   )
 
   def apply(tweet: Tweet): Future[Tweet] =
