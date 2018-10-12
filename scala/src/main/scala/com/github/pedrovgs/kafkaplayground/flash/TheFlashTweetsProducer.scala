@@ -1,4 +1,4 @@
-package com.github.pedrovgs.kafkaplayground
+package com.github.pedrovgs.kafkaplayground.flash
 
 import cakesolutions.kafka.KafkaProducer.Conf
 import cakesolutions.kafka.{KafkaProducer, KafkaProducerRecord}
@@ -7,15 +7,14 @@ import org.apache.kafka.common.serialization.StringSerializer
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object GeolocatedTweetsProducer {
+object TheFlashTweetsProducer {
   private val unknownLocationFlashTopic = "the-flash-tweets"
-  private val locatedFlashTopic         = "the-flash-tweets-with-location"
-  private val brokerAddress             = "localhost:29092"
+  private val locatedFlashTopic = "the-flash-tweets-with-location"
 }
 
-class GeolocatedTweetsProducer(implicit val ec: ExecutionContext = ExecutionContext.global) {
+class TheFlashTweetsProducer(private val brokerAddress: String, implicit val ec: ExecutionContext = ExecutionContext.global) {
 
-  import GeolocatedTweetsProducer._
+  import TheFlashTweetsProducer._
 
   private val flashProducer = KafkaProducer(
     Conf(new StringSerializer(), new StringSerializer(), bootstrapServers = brokerAddress)
@@ -24,7 +23,7 @@ class GeolocatedTweetsProducer(implicit val ec: ExecutionContext = ExecutionCont
   def apply(tweet: Tweet): Future[Tweet] = {
     tweet.geo match {
       case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
-      case _                 => sendUnknownLocationFlashAdvertisement(tweet)
+      case _ => sendUnknownLocationFlashAdvertisement(tweet)
     }
   }
 
