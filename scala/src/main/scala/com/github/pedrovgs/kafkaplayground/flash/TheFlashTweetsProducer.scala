@@ -3,7 +3,9 @@ package com.github.pedrovgs.kafkaplayground.flash
 import cakesolutions.kafka.KafkaProducer.Conf
 import cakesolutions.kafka.{KafkaProducer, KafkaProducerRecord}
 import com.danielasfregola.twitter4s.entities.{Geo, Tweet}
+import org.apache.commons.lang.StringEscapeUtils
 import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,11 +30,14 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
     ).withProperty("compression.type", "snappy")
   )
 
-  def apply(tweet: Tweet): Future[Tweet] =
+  def apply(tweet: Tweet): Future[Tweet] = {
+    println(s"Sending tweet to the associated topic: ${tweet.text}")
     tweet.geo match {
       case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
       case _ => sendUnknownLocationFlashAdvertisement(tweet)
     }
+  }
+
 
   private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] =
     sendRecordToProducer(
@@ -43,7 +48,7 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
            |  "latitude": ${coordinates.coordinates.head},
            |  "longitude": ${coordinates.coordinates.last},
            |  "id": "${tweet.id}",
-           |  "message": "${tweet.text}"
+           |  "message": "${QueryParserUtil.escape(tweet.text)}"
            |}
        """.stripMargin
     ).map(_ => tweet)
@@ -53,7 +58,7 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
       topic = unknownLocationFlashTopic,
       message =
         s"""
-           |{ "message": "${tweet.text}"
+           |{ "message": "${QueryParserUtil.escape(tweet.text)}"
         }""".stripMargin
     ).map(_ => tweet)
 

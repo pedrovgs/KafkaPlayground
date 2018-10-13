@@ -64,7 +64,7 @@ class ElasticsearchConsumer(private val brokerAddress: String,
     val records = consumer.poll(10.seconds.toMillis)
     records.forEach { record =>
       val content = record.value()
-      println("Saving topic content into elastic: $content")
+      println(s"Saving topic content into elastic: $content")
       try {
       client.execute {
           indexInto(elasticIndex / "tweets") doc content
