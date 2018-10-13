@@ -6,6 +6,7 @@ import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.elasticsearch.client.RestClientBuilder.RequestConfigCallback
 import com.sksamuel.elastic4s.http.HttpClient
@@ -63,11 +64,17 @@ class ElasticsearchConsumer(private val brokerAddress: String,
     val records = consumer.poll(10.seconds.toMillis)
     records.forEach { record =>
       val content = record.value()
-      println(content)
+      println("Saving topic content into elastic: $content")
+      try {
       client.execute {
-        indexInto(elasticIndex) doc content
+          indexInto(elasticIndex / "tweets") doc content
+      }
+      } catch {
+        case e: Exception =>
+          println(e.getMessage)
       }
     }
+
     sendTweetsInfoToElasticsearch(consumer)
   }
 

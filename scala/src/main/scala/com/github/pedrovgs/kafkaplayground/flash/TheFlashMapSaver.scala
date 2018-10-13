@@ -1,6 +1,6 @@
 package com.github.pedrovgs.kafkaplayground.flash
 
-object TheFlashTweetsSaver {
+object TheFlashMapSaver {
 
   private val notLocatedTweetsConsumer = new ElasticsearchConsumer(
     brokerAddress = "localhost:29092",
