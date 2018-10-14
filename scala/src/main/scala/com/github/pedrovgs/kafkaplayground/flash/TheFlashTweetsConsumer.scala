@@ -31,7 +31,7 @@ class TheFlashTweetsConsumer(private val brokerAddress: String,
 
   def poll(): Unit = {
     println(s"Polling messages from the kafka consumer at topic: $topic.")
-    val records = consumer.poll(5.seconds.toMillis)
+    val records = consumer.poll(10.seconds.toMillis)
     println(s"We've fetched ${records.count()} records.")
     records.forEach { record =>
       val id      = s"${record.topic()}_${record.partition()}_${record.offset()}"
