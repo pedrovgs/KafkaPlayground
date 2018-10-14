@@ -9,7 +9,7 @@ Using a ready to use Elasticsearch cluster you can configure [here](https://bons
 * Create [bonsai.io](https://bonsai.io) free account and free cluster.
 * Create two Elasticsearch index, one for the located tweet and another one for the unknown location tweets. You can do it from the bonsai.io web if you click on the ``Interactive Console`` tab and you send two ``PUT`` requests at the index names: ``located_tweets`` and ``unknown_location_tweets``.
 * Create a Elasticsearch tweets consumer posting every kafka message into the desired Elasticsearch index.
-* Run a program with the producer and the consumers and take a look at the Elasticsearch cluster.
+* While running the ``TheFlashSeeker`` program, run a the main class named ``TheFlashSaver`` and take a look at the Elasticsearch cluster and the logs shown.
 
 **Tips:**
 

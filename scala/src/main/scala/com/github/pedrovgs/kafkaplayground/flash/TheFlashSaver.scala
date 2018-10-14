@@ -5,7 +5,7 @@ import com.typesafe.config.ConfigFactory
 
 import scala.annotation.tailrec
 
-object TheFlashMapSaver {
+object TheFlashSaver {
 
   private val config            = ConfigFactory.load()
   private val elasticsearchHost = config.getString("elasticsearch.host")

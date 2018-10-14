@@ -27,7 +27,7 @@ class ElasticsearchConsumerSpec
 
   override val topicsToClearAfterEach: Seq[String] = Seq(anyTopic)
 
-  "ElsticsearchConsumer" should "create a new document for the configured index using the messages polled from the kafka cluster" in {
+  "ElasticsearchConsumer" should "create a new document for the configured index using the messages polled from the kafka cluster" in {
     val record = produceMessage(anyTopic, anyContent).futureValue(
       timeout = PatienceConfiguration.Timeout(10.seconds))
 
