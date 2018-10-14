@@ -58,14 +58,15 @@ class ElasticsearchConsumer(private val brokerAddress: String,
   private def sendTweetsInfoToElasticsearch(consumer: KafkaConsumer[String, String]): Unit = {
     val records = consumer.poll(10.seconds.toMillis)
     records.forEach { record =>
+      val id = s"${record.topic()}_${record.partition()}_${record.offset()}"
       val content = record.value()
       println(s"Saving topic content into elastic: $content")
-      saveContentIntoElasticsearch(content)
+      saveContentIntoElasticsearch(id, content)
     }
     sendTweetsInfoToElasticsearch(consumer)
   }
 
-  private def saveContentIntoElasticsearch(content: String) = {
+  private def saveContentIntoElasticsearch(id: String, content: String) = {
     try {
       val index  = new Index.Builder(content).index(elasticIndex).`type`("tweets").build
       val result = client.execute(index)
