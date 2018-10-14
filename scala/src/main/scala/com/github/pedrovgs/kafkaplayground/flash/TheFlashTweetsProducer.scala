@@ -5,13 +5,12 @@ import cakesolutions.kafka.{KafkaProducer, KafkaProducerRecord}
 import com.danielasfregola.twitter4s.entities.{Geo, Tweet}
 import org.apache.commons.lang.StringEscapeUtils
 import org.apache.kafka.common.serialization.StringSerializer
-import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
 object TheFlashTweetsProducer {
   private val unknownLocationFlashTopic = "the-flash-tweets"
-  private val locatedFlashTopic = "the-flash-tweets-with-location"
+  private val locatedFlashTopic         = "the-flash-tweets-with-location"
 }
 
 class TheFlashTweetsProducer(private val brokerAddress: String,
@@ -34,16 +33,14 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
     println(s"Sending tweet to the associated topic: ${tweet.text}")
     tweet.geo match {
       case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
-      case _ => sendUnknownLocationFlashAdvertisement(tweet)
+      case _                 => sendUnknownLocationFlashAdvertisement(tweet)
     }
   }
-
 
   private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] =
     sendRecordToProducer(
       topic = locatedFlashTopic,
-      message =
-        s"""
+      message = s"""
            |{
            |  "latitude": ${coordinates.coordinates.head},
            |  "longitude": ${coordinates.coordinates.last},
@@ -56,10 +53,11 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
   private def sendUnknownLocationFlashAdvertisement(tweet: Tweet): Future[Tweet] =
     sendRecordToProducer(
       topic = unknownLocationFlashTopic,
-      message =
-        s"""
-           |{ "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
-        }""".stripMargin
+      message = s"""
+           |{
+           |  "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
+           |}
+        """.stripMargin
     ).map(_ => tweet)
 
   private def sendRecordToProducer(topic: String, message: String) =

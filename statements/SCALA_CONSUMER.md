@@ -8,7 +8,25 @@ Using a ready to use Elasticsearch cluster you can configure [here](https://bons
 
 * Create [bonsai.io](https://bonsai.io) free account and free cluster.
 * Create two Elasticsearch index, one for the located tweet and another one for the unknown location tweets. You can do it from the bonsai.io web if you click on the ``Interactive Console`` tab and you send two ``PUT`` requests at the index names: ``located_tweets`` and ``unknown_location_tweets``.
+* Create a Elasticsearch tweets consumer posting every kafka message into the desired Elasticsearch index.
+* Run a program with the producer and the consumers and take a look at the Elasticsearch cluster.
 
+**Tips:**
 
+* In order to run the main program we already coded for you, you'll have to update your ``application.conf`` file with the following information:
 
-Remember that based on the ``bonsai.io`` cluster url you can extract the username and password as follows: ``https://username:password@host:port``.
+```
+elasticsearch {
+  host = "<YOUR_BONSAI_ELASTIC_CLUSTER_HOST>"
+  user = "<YOUR_BONSAI_ELASTIC_CLUSTER_USER>"
+  pass = "YOUR_BONSAI_ELASTIC_CLUSTER_PASS"
+}
+```
+
+* Remember that based on the ``bonsai.io`` cluster url you can extract the username and password as follows: ``https://username:password@host:port``.
+
+* Using the ``bonsai.io`` interactive console you can perform a search text query throwing a ``GET`` request to this path: ``/<INDEX_NAME>/_search?q=flash``
+
+* You can create a Kibana table visualization if you want to let your researchers review all the data set and perform queries as follows:
+
+![table](../art/kibanaTable.png)

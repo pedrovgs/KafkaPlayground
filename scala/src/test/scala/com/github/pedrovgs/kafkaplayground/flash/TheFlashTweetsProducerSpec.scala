@@ -47,8 +47,13 @@ class TheFlashTweetsProducerSpec
 
     val records = recordsForTopic(unknownLocationFlashTopic)
 
+    val expectedMessage = s"""
+                             |{
+                             |  "message": "I've seen the fastest man alive!"
+                             |}
+        """.stripMargin
     records.size shouldBe 1
-    records.head.value shouldBe anyGeoLocatedTweet.text
+    records.head.value shouldBe expectedMessage
   }
 
   it should "return the tweet passed as param if the tweet has geo location info" in {

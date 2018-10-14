@@ -1,18 +1,14 @@
 package com.github.pedrovgs.kafkaplayground.flash
 
 import cakesolutions.kafka.KafkaConsumer.Conf
-import com.sksamuel.elastic4s.ElasticsearchClientUri
-import com.sksamuel.elastic4s.http.ElasticDsl._
+import io.searchbox.client.config.HttpClientConfig
+import io.searchbox.client.{JestClient, JestClientFactory}
+import io.searchbox.core.Index
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
-import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.impl.client.BasicCredentialsProvider
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.elasticsearch.client.RestClientBuilder.RequestConfigCallback
-import com.sksamuel.elastic4s.http.HttpClient
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import com.sksamuel.elastic4s.http.ElasticDsl._
+
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
@@ -24,10 +20,10 @@ object ElasticsearchConsumer {
 
 class ElasticsearchConsumer(private val brokerAddress: String,
                             private val topic: String,
-                            private val elasticsearchHost: String = "https://kafka-testing-3470068779.eu-west-1.bonsaisearch.net",
-                            private val elasticsearchUser: String = "6zuds9wifz",
-                            private val elasticsearchPass: String = "8htlatmiod",
-                            private val elasticIndex: String = "unknown_location_tweets",
+                            private val elasticsearchHost: String,
+                            private val elasticsearchUser: String,
+                            private val elasticsearchPass: String,
+                            private val elasticIndex: String,
                             implicit val ec: ExecutionContext = ExecutionContext.global) {
 
   import ElasticsearchConsumer._
@@ -41,19 +37,17 @@ class ElasticsearchConsumer(private val brokerAddress: String,
     )
   )
 
-  private val provider = {
-    val provider = new BasicCredentialsProvider
-    val credentials = new UsernamePasswordCredentials(elasticsearchUser, elasticsearchPass)
-    provider.setCredentials(AuthScope.ANY, credentials)
-    provider
+  private val client: JestClient = {
+    val factory  = new JestClientFactory()
+    val provider = new BasicCredentialsProvider()
+    provider.setCredentials(AuthScope.ANY,
+                            new UsernamePasswordCredentials(elasticsearchUser, elasticsearchPass))
+    factory.setHttpClientConfig(
+      new HttpClientConfig.Builder(elasticsearchHost)
+        .credentialsProvider(provider)
+        .build())
+    factory.getObject
   }
-  private val client = HttpClient(ElasticsearchClientUri(elasticsearchHost, 443), new RequestConfigCallback {
-    override def customizeRequestConfig(requestConfigBuilder: Builder) = {
-      requestConfigBuilder
-    }
-  }, (httpClientBuilder: HttpAsyncClientBuilder) => {
-    httpClientBuilder.setDefaultCredentialsProvider(provider)
-  })
 
   def start(): Unit = {
     consumer.subscribe(List(topic).asJava)
@@ -66,19 +60,19 @@ class ElasticsearchConsumer(private val brokerAddress: String,
     records.forEach { record =>
       val content = record.value()
       println(s"Saving topic content into elastic: $content")
-      try {
-        val requestResult = client.execute {
-          indexInto(index = elasticIndex, `type` = "tweets") doc """{"message": "a"}"""
-        }.await
-        println(s"Elasticsearch result ${requestResult}")
-      } catch {
-        case e: Exception =>
-          println(e.getMessage)
-
-      }
+      saveContentIntoElasticsearch(content)
     }
-
     sendTweetsInfoToElasticsearch(consumer)
   }
 
+  private def saveContentIntoElasticsearch(content: String) = {
+    try {
+      val index  = new Index.Builder(content).index(elasticIndex).`type`("tweets").build
+      val result = client.execute(index)
+      println(s"Elasticsearch new document id: ${result.getId}")
+    } catch {
+      case e: Exception =>
+        println(e.getMessage)
+    }
+  }
 }
