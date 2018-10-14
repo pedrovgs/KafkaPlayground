@@ -48,7 +48,7 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
            |  "latitude": ${coordinates.coordinates.head},
            |  "longitude": ${coordinates.coordinates.last},
            |  "id": "${tweet.id}",
-           |  "message": "${QueryParserUtil.escape(tweet.text)}"
+           |  "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
            |}
        """.stripMargin
     ).map(_ => tweet)
@@ -58,7 +58,7 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
       topic = unknownLocationFlashTopic,
       message =
         s"""
-           |{ "message": "${QueryParserUtil.escape(tweet.text)}"
+           |{ "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
         }""".stripMargin
     ).map(_ => tweet)
 

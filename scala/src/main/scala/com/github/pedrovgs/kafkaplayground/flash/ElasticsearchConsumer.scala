@@ -2,6 +2,7 @@ package com.github.pedrovgs.kafkaplayground.flash
 
 import cakesolutions.kafka.KafkaConsumer.Conf
 import com.sksamuel.elastic4s.ElasticsearchClientUri
+import com.sksamuel.elastic4s.http.ElasticDsl._
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.impl.client.BasicCredentialsProvider
@@ -46,7 +47,7 @@ class ElasticsearchConsumer(private val brokerAddress: String,
     provider.setCredentials(AuthScope.ANY, credentials)
     provider
   }
-  private val client = HttpClient(ElasticsearchClientUri(elasticsearchHost, 9300), new RequestConfigCallback {
+  private val client = HttpClient(ElasticsearchClientUri(elasticsearchHost, 443), new RequestConfigCallback {
     override def customizeRequestConfig(requestConfigBuilder: Builder) = {
       requestConfigBuilder
     }
@@ -66,12 +67,14 @@ class ElasticsearchConsumer(private val brokerAddress: String,
       val content = record.value()
       println(s"Saving topic content into elastic: $content")
       try {
-      client.execute {
-          indexInto(elasticIndex / "tweets") doc content
-      }
+        val requestResult = client.execute {
+          indexInto(index = elasticIndex, `type` = "tweets") doc """{"message": "a"}"""
+        }.await
+        println(s"Elasticsearch result ${requestResult}")
       } catch {
         case e: Exception =>
           println(e.getMessage)
+
       }
     }
 
