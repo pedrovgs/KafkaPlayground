@@ -6,7 +6,7 @@ Two hours ago the speed force barrier exploded and some unknown force affected T
 
 Thanks our to friends at Star Labs we've created a program that let us know when a Tweet about the Flash has been published. However, we don't know how these tweets are related our friend and where these tweets where published. We need your help to post all these tweets into our Kafka cluster so our machine learning experts can study and find any pattern trying to predict the next The Flash location.
 
-Using just the command line and some Scala code could you perform the following tasks?
+Using just the command line and some Scala code, could you perform the following tasks?
 
 * Start a Kafka cluster using the docker instalation and the Kafka cli client.
 * Create two new topics with 6 partitions named ``the-flash-tweets-with-location`` and ``the-flash-tweets``.

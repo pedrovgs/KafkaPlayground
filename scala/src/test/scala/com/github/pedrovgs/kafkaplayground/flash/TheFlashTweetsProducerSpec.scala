@@ -4,8 +4,10 @@ import java.util.Date
 
 import com.danielasfregola.twitter4s.entities.{Geo, Tweet}
 import com.github.pedrovgs.kafkaplayground.utils.EmbeddedKafkaServer
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.concurrent.{PatienceConfiguration, ScalaFutures}
+import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
+
+import scala.concurrent.duration._
 
 object TheFlashTweetsProducerSpec {
   private val unknownLocationFlashTopic = "the-flash-tweets"
@@ -27,38 +29,40 @@ class TheFlashTweetsProducerSpec
     extends FlatSpec
     with Matchers
     with EmbeddedKafkaServer
-    with ScalaFutures {
+    with ScalaFutures
+    with BeforeAndAfter {
 
   import TheFlashTweetsProducerSpec._
 
-  override val topicsToClearAfterEach: Seq[String] =
-    Seq(locatedFlashTopic, unknownLocationFlashTopic)
-
-  private val producer = new TheFlashTweetsProducer(kafkaServerAddress())
-
   "TheFlashTweetsProducer" should "return the tweet passed as param if the tweet has no geo location info" in {
-    val result = producer(anyNotGeoLocatedTweet).futureValue
+    val result = produceTweet(anyNotGeoLocatedTweet)
 
     result shouldBe anyNotGeoLocatedTweet
   }
 
   it should "send a record with just the text of the tweet to the the-flash-tweets topic if the tweet has no geo location info" in {
-    producer(anyNotGeoLocatedTweet).futureValue
+    produceTweet(anyNotGeoLocatedTweet)
 
     val records = recordsForTopic(unknownLocationFlashTopic)
 
+    val expectedMessage =
+      s"""
+         |{
+         |  "message": "I've seen the fastest man alive!"
+         |}
+        """.stripMargin
     records.size shouldBe 1
-    records.head.value shouldBe anyGeoLocatedTweet.text
+    records.head shouldBe expectedMessage
   }
 
   it should "return the tweet passed as param if the tweet has geo location info" in {
-    val result = producer(anyGeoLocatedTweet).futureValue
+    val result = produceTweet(anyGeoLocatedTweet)
 
     result shouldBe anyGeoLocatedTweet
   }
 
   it should "send a record with just the text of the tweet to the the-flash-tweets-with-location topic if the tweet has geo location info" in {
-    producer(anyGeoLocatedTweet).futureValue
+    produceTweet(anyGeoLocatedTweet)
 
     val records = recordsForTopic(locatedFlashTopic)
 
@@ -72,12 +76,12 @@ class TheFlashTweetsProducerSpec
          |}
        """.stripMargin
     records.size shouldBe 1
-    records.head.value shouldBe expectedMessage
+    records.head shouldBe expectedMessage
   }
 
   it should "send a not geo-located tweet to a topic and another geo-located to the other topic configured" in {
-    producer(anyNotGeoLocatedTweet).futureValue
-    producer(anyGeoLocatedTweet).futureValue
+    produceTweet(anyNotGeoLocatedTweet)
+    produceTweet(anyGeoLocatedTweet)
 
     val locatedTopicRecords         = recordsForTopic(locatedFlashTopic)
     val unknownLocationTopicRecords = recordsForTopic(unknownLocationFlashTopic)
@@ -85,5 +89,9 @@ class TheFlashTweetsProducerSpec
     locatedTopicRecords.size shouldBe 1
     unknownLocationTopicRecords.size shouldBe 1
   }
+
+  private def produceTweet(tweet: Tweet) =
+    new TheFlashTweetsProducer(kafkaServerAddress())(tweet)
+      .futureValue(timeout = PatienceConfiguration.Timeout(1.seconds))
 
 }
