@@ -1,13 +1,16 @@
 package com.github.pedrovgs.kafkaplayground.utils
 
-import cakesolutions.kafka.KafkaConsumer
+import cakesolutions.kafka.KafkaProducer.Conf
+import cakesolutions.kafka.{KafkaConsumer, KafkaProducer, KafkaProducerRecord}
 import cakesolutions.kafka.testkit.KafkaServer
 import com.typesafe.config.ConfigFactory
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.kafka.clients.producer.{ProducerRecord, RecordMetadata}
+import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Suite}
 
 import scala.collection.JavaConverters._
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
@@ -57,11 +60,11 @@ trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
     val consumer = KafkaConsumer(
       KafkaConsumer.Conf(
         ConfigFactory.parseString(s"""
-           |{
-           |  topics = ["$topic"]
-           |  group.id = "testing-consumer"
-           |  auto.offset.reset = "earliest"
-           |}
+             |{
+             |  topics = ["$topic"]
+             |  group.id = "testing-consumer"
+             |  auto.offset.reset = "earliest"
+             |}
           """.stripMargin).withFallback(baseConfig),
         keyDeserializer = new StringDeserializer(),
         valueDeserializer = new StringDeserializer()
@@ -71,6 +74,18 @@ trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
     consumer.commitSync()
     consumer.close()
     records
+  }
+
+  def produceMessage(topic: String, content: String): Future[RecordMetadata] = {
+    val producerRecord = KafkaProducerRecord[String, String](topic = topic, value = content)
+    val producer = KafkaProducer(
+      Conf(
+        keySerializer = new StringSerializer(),
+        valueSerializer = new StringSerializer(),
+        bootstrapServers = kafkaServerAddress()
+      )
+    )
+    producer.send(producerRecord)
   }
 
 }
