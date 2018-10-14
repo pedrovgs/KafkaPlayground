@@ -2,7 +2,6 @@ package com.github.pedrovgs.kafkaplayground.utils
 
 import cakesolutions.kafka.KafkaProducerRecord
 import cakesolutions.kafka.testkit.KafkaServer
-import org.apache.kafka.clients.consumer.{ConsumerConfig, OffsetResetStrategy}
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.scalatest.{BeforeAndAfter, Suite}
 
@@ -37,13 +36,7 @@ trait EmbeddedKafkaServer extends BeforeAndAfter {
         keyDeserializer = new StringDeserializer,
         valueDeserializer = new StringDeserializer,
         expectedNumOfRecords = expectedNumberOfRecords,
-        timeout = 10.seconds.toMillis,
-        consumerConfig = Map(
-          ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG -> "1",
-          ConsumerConfig.GROUP_ID_CONFIG                -> "embedded-kafka-server-test-consumer",
-          ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG      -> "true",
-          ConsumerConfig.AUTO_OFFSET_RESET_CONFIG       -> OffsetResetStrategy.EARLIEST.toString.toLowerCase
-        ),
+        timeout = 10.seconds.toMillis
       )
       .map(_._2)
 
