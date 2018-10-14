@@ -1,6 +1,9 @@
 package com.github.pedrovgs.kafkaplayground.flash
 
+import com.github.pedrovgs.kafkaplayground.flash.elasticsearch.ElasticClient
 import com.typesafe.config.ConfigFactory
+
+import scala.annotation.tailrec
 
 object TheFlashMapSaver {
 
@@ -12,24 +15,29 @@ object TheFlashMapSaver {
   private val notLocatedTweetsConsumer = new ElasticsearchConsumer(
     brokerAddress = "localhost:29092",
     topic = "the-flash-tweets",
-    elasticsearchHost = elasticsearchHost,
-    elasticsearchUser = elasticsearchUser,
-    elasticsearchPass = elasticsearchPass,
-    elasticIndex = "unknown_location_tweets"
+    elasticClient = new ElasticClient(elasticsearchHost = elasticsearchHost,
+                                      elasticsearchUser = elasticsearchUser,
+                                      elasticsearchPass = elasticsearchPass,
+                                      elasticIndex = "unknown_location_tweets")
   )
 
   private val locatedTweetsConsumer = new ElasticsearchConsumer(
     brokerAddress = "localhost:29092",
-    topic = "the-flash-tweets",
-    elasticsearchHost = "https://kafka-testing-3470068779.eu-west-1.bonsaisearch.net",
-    elasticsearchUser = "6zuds9wifz",
-    elasticsearchPass = "8htlatmiod",
-    elasticIndex = "located_tweets"
+    topic = "the-flash-tweets-with-location",
+    elasticClient = new ElasticClient(elasticsearchHost = elasticsearchHost,
+                                      elasticsearchUser = elasticsearchUser,
+                                      elasticsearchPass = elasticsearchPass,
+                                      elasticIndex = "located_tweets")
   )
 
   def main(args: Array[String]): Unit = {
-    notLocatedTweetsConsumer.start()
-    locatedTweetsConsumer.start()
+    consumeKafkaMessages()
   }
 
+  @tailrec
+  private def consumeKafkaMessages(): Unit = {
+    locatedTweetsConsumer.poll()
+    notLocatedTweetsConsumer.poll()
+    consumeKafkaMessages()
+  }
 }
