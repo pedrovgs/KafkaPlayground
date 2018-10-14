@@ -12,7 +12,7 @@ object TheFlashSaver {
   private val elasticsearchUser = config.getString("elasticsearch.user")
   private val elasticsearchPass = config.getString("elasticsearch.pass")
 
-  private val notLocatedTweetsConsumer = new ElasticsearchConsumer(
+  private val notLocatedTweetsConsumer = new TheFlashTweetsConsumer(
     brokerAddress = "localhost:29092",
     topic = "the-flash-tweets",
     elasticClient = new ElasticClient(elasticsearchHost = elasticsearchHost,
@@ -21,7 +21,7 @@ object TheFlashSaver {
                                       elasticIndex = "unknown_location_tweets")
   )
 
-  private val locatedTweetsConsumer = new ElasticsearchConsumer(
+  private val locatedTweetsConsumer = new TheFlashTweetsConsumer(
     brokerAddress = "localhost:29092",
     topic = "the-flash-tweets-with-location",
     elasticClient = new ElasticClient(elasticsearchHost = elasticsearchHost,

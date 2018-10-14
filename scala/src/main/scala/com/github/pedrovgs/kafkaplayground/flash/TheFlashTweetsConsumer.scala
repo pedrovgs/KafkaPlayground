@@ -8,15 +8,15 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
-object ElasticsearchConsumer {
+object TheFlashTweetsConsumer {
   private val groupId = "kafka-elasticsearch-consumer"
 }
 
-class ElasticsearchConsumer(private val brokerAddress: String,
-                            private val topic: String,
-                            private val elasticClient: ElasticClient) {
+class TheFlashTweetsConsumer(private val brokerAddress: String,
+                             private val topic: String,
+                             private val elasticClient: ElasticClient) {
 
-  import ElasticsearchConsumer._
+  import TheFlashTweetsConsumer._
 
   private val consumer = cakesolutions.kafka.KafkaConsumer(
     Conf(

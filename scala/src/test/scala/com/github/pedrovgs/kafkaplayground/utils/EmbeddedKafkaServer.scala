@@ -1,91 +1,58 @@
 package com.github.pedrovgs.kafkaplayground.utils
 
-import cakesolutions.kafka.KafkaProducer.Conf
-import cakesolutions.kafka.{KafkaConsumer, KafkaProducer, KafkaProducerRecord}
+import cakesolutions.kafka.KafkaProducerRecord
 import cakesolutions.kafka.testkit.KafkaServer
-import com.typesafe.config.ConfigFactory
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.clients.producer.{ProducerRecord, RecordMetadata}
+import org.apache.kafka.clients.consumer.{ConsumerConfig, OffsetResetStrategy}
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Suite}
+import org.scalatest.{BeforeAndAfter, Suite}
 
-import scala.collection.JavaConverters._
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
-trait EmbeddedKafkaServer extends BeforeAndAfter with BeforeAndAfterAll {
+trait EmbeddedKafkaServer extends BeforeAndAfter {
   this: Suite =>
 
-  val topicsToClearAfterEach: Seq[String] = Seq()
+  private var kafkaServer: KafkaServer = _
 
-  private val kafkaServer = new KafkaServer
-
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
+  before {
+    kafkaServer = new KafkaServer
     startKafkaServer()
   }
 
-  before {
-    clearTopics()
-  }
-
   after {
-    clearTopics()
-  }
-
-  override protected def afterAll(): Unit = {
     stopKafkaServer()
-    super.afterAll()
   }
 
   def startKafkaServer(): Unit = kafkaServer.startup()
 
-  def stopKafkaServer(): Unit = {
-    kafkaServer.close()
-  }
+  def stopKafkaServer(): Unit = kafkaServer.close()
 
   def kafkaServerAddress(): String = s"localhost:${kafkaServer.kafkaPort}"
 
   def zookeeperServerAddress(): String = s"localhost:${kafkaServer.zookeeperPort}"
 
-  def clearTopics(topics: Seq[String] = topicsToClearAfterEach): Unit =
-    topics.foreach(topic => recordsForTopic(topic))
-
-  def recordsForTopic(topic: String): Iterable[ConsumerRecord[String, String]] = {
-    val baseConfig = ConfigFactory.parseString(s"""
-         |{
-         |  bootstrap.servers = "localhost:${kafkaServer.kafkaPort}"
-         |}
-       """.stripMargin)
-    val consumer = KafkaConsumer(
-      KafkaConsumer.Conf(
-        ConfigFactory.parseString(s"""
-             |{
-             |  topics = ["$topic"]
-             |  group.id = "testing-consumer"
-             |  auto.offset.reset = "earliest"
-             |}
-          """.stripMargin).withFallback(baseConfig),
-        keyDeserializer = new StringDeserializer(),
-        valueDeserializer = new StringDeserializer()
-      ))
-    consumer.subscribe(List(topic).asJava)
-    val records = consumer.poll(10.second.toMillis).asScala
-    consumer.commitSync()
-    consumer.close()
-    records
-  }
-
-  def produceMessage(topic: String, content: String): Future[RecordMetadata] = {
-    val producerRecord = KafkaProducerRecord[String, String](topic = topic, value = content)
-    val producer = KafkaProducer(
-      Conf(
-        keySerializer = new StringSerializer(),
-        valueSerializer = new StringSerializer(),
-        bootstrapServers = kafkaServerAddress()
+  def recordsForTopic(topic: String, expectedNumberOfRecords: Int = 1): Iterable[String] =
+    kafkaServer
+      .consume[String, String](
+        topic = topic,
+        keyDeserializer = new StringDeserializer,
+        valueDeserializer = new StringDeserializer,
+        expectedNumOfRecords = expectedNumberOfRecords,
+        timeout = 10.seconds.toMillis,
+        consumerConfig = Map(
+          ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG -> "1",
+          ConsumerConfig.GROUP_ID_CONFIG                -> "embedded-kafka-server-test-consumer",
+          ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG      -> "true",
+          ConsumerConfig.AUTO_OFFSET_RESET_CONFIG       -> OffsetResetStrategy.EARLIEST.toString.toLowerCase
+        ),
       )
+      .map(_._2)
+
+  def produceMessage(topic: String, content: String): Unit =
+    kafkaServer.produce(
+      topic = topic,
+      records = Seq(KafkaProducerRecord[String, String](topic = topic, value = content)),
+      keySerializer = new StringSerializer(),
+      valueSerializer = new StringSerializer()
     )
-    producer.send(producerRecord)
-  }
 
 }
