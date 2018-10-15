@@ -27,11 +27,31 @@ This table contains all the exercises resolved in this repository sorted by goal
 
 ## Kafka F.A.Qs:
 
+* **What is a message broker?**
+
+A message broker is an intermediary computer program module that translates a message from the formal messaging protocol of the sender to the formal messaging protocol of the receiver. Message brokers are elements in telecommunication or computer networks where software applications communicate by exchanging formally-defined messages.
+
+* **What is the main difference with RabbitMQ?**
+
+Kafka consumers requests the messages from the broker using a polling mechanism while RabbitMQ pushes the clients listening at any queue.
+
+Kafka guarantees the consumption order per partition. The partitions distribution is based on the key hashing.
+
+Kafka does not support by default topics filtering based on rules defined over the topic format.
+
+Basic kafka connectors indicates the offset they've consumed per partition automatically or manually but this offset represents a group of messages in the topic.
+
+There is no a dead letter concept defined as part of the Kafka literature becuase the borkers can keep a history of the messages for long time.
+
 ![kafkapartitions](art/kafkaPartitions.jpg)
 
 * **What does the number of partitions per topic represents?**
 
 The number of consumers we can have getting Kafka messages at concurrently.
+
+* **What are the keys useful for in our records?**
+
+Keys are used to guarantee the consumption order. As the order is guaranteed per partition and the same keys go to the same partitions, we use the key to consume data in order. An example could be using the user id as key when analyzing data in order per user.
 
 * **Can we increase the number of partitions per topic once it is created?**
 
@@ -77,6 +97,17 @@ If the replication factor is generating a performance issue review if you can ge
 * **Is there any naming convention for our Kafka topics?**
 
 [Here](https://medium.com/@criccomini/how-to-paint-a-bike-shed-kafka-topic-naming-conventions-1b7259790073) you can find some. This could be an example ``<app type>.<dataset name>.<data>``. Remember you can't rename a topic, so pick a good naming convention fron the begining.
+
+* **What should I be able to do if I run a Kafka cluster?**
+
+Rolling restart borkers.
+Updating configurations.
+Rebalancing partitions.
+Increasing the replication factor.
+Adding more brokers.
+Removing brokers.
+Adding more consumers.
+Removing consumers.
 
 ## Install Apache Kafka with Docker
 
