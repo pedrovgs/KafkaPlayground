@@ -23,7 +23,7 @@ This table contains all the exercises resolved in this repository sorted by goal
 | 5 | Learn how to use Kafka Tool app. | [KAFKA TOOL.](./statements/KAFKA_TOOL.md) | - | - |
 | 6 | Learn how to create a Kafka producer written in Scala. | [SCALA PRODUCER.](./statements/SCALA_PRODUCER.md) | [TheFlashTweetsProducer](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/main/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsProducer.scala) | [TheFlashTweetsProducerSpec](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/test/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsProducerSpec.scala) |
 | 7 | Learn how to create a Kafka consumer written in Scala. | [SCALA CONSUMER.](./statements/SCALA_CONSUMER.md) | [TheFlashTweetsConsumer](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/main/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsConsumer.scala) | [TheFlashTweetsConsumerSpec](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/test/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsConsumerSpec.scala) |
-
+| 8 | Kafka Connect. | [KAFKA CONNECT.](./statements/KAFKA_CONNECT.md) | - | - |
 
 ## Install Apache Kafka with Docker
 
