@@ -25,6 +25,57 @@ This table contains all the exercises resolved in this repository sorted by goal
 | 7 | Learn how to create a Kafka consumer written in Scala. | [SCALA CONSUMER.](./statements/SCALA_CONSUMER.md) | [TheFlashTweetsConsumer](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/main/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsConsumer.scala) | [TheFlashTweetsConsumerSpec](https://github.com/pedrovgs/KafkaPlayground/blob/master/scala/src/test/scala/com/github/pedrovgs/kafkaplayground/flash/TheFlashTweetsConsumerSpec.scala) |
 | 8 | Kafka Connect. | [KAFKA CONNECT.](./statements/KAFKA_CONNECT.md) | - | - |
 
+## Kafka F.A.Qs:
+
+* **What does the number of partitions per topic represents?**
+
+The number of consumers we can have getting Kafka messages at concurrently.
+
+* **Can we increase the number of partitions per topic once it is created?**
+
+Yes, but take into account that the keys distributions are going to change. This also breaks the keys ordering guarantees.
+
+* **What happens if we add more partitions?**
+
+The more partitions we have and the more consumers we have, the better throughput we get. The numbrer of partitions also let's you distribute the brokers load. This will also increase the load in our Zookeeper cluster.
+
+* **How many partitions per topic show we create?**
+
+This is not a silver bullet formula, but we could use the following rules as a single rule of thumb. 
+
+For small clusters, less than 12 brokers. Partitions = 2 x number of brokers.
+For big clusters, more than 11 brokers. Partitions = number of brokers.
+
+If the topic is going to be consumed by a fixed number of consumers, you'll need at least as brokers and partitions as consumers you have.
+
+**The most important rule is to measure the cluster throughput in consumers and producers and review if we need to improve our system.**
+
+
+
+* **Why the replication factor is so important for us?**
+
+This value let us ensure our messages are going to continue being consumes even if the leader broker falls.
+
+* **Can we increase the replication factor once the topic is created?**
+
+Yes, but his might decrease the performance of the cluster while the migration takes effect.
+
+* **What replication factor should I use?**
+
+It should be at least 2, usually 3 and maximum 4. If your replication factor is ``n`` these are the result's you'll get:
+
+* n - 1 brokers can fail.
+
+Remember that a high replication factor increases the network latency due to the acks confiuration and also needs more disk.
+
+If the replication factor is generating a performance issue review if you can get a better borker instead of reducing the replication factor.
+
+**Never use 1 as replication factor. If you do this and your borker goes down...you won't be able to recover your data**.
+
+* **Is there any naming convention for our Kafka topics?**
+
+[Here](https://medium.com/@criccomini/how-to-paint-a-bike-shed-kafka-topic-naming-conventions-1b7259790073) you can find some. This could be an example ``<app type>.<dataset name>.<data>``. Remember you can't rename a topic, so pick a good naming convention fron the begining.
+
 ## Install Apache Kafka with Docker
 
 Thanks to the usage of docker we can simplify the usage of Kafka for this playground. You just need to move to the folder named ``docker`` and start all the required instances.
