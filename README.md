@@ -27,6 +27,8 @@ This table contains all the exercises resolved in this repository sorted by goal
 
 ## Kafka F.A.Qs:
 
+![kafkapartitions](art/kafkaPartitions.jpg)
+
 * **What does the number of partitions per topic represents?**
 
 The number of consumers we can have getting Kafka messages at concurrently.
@@ -50,7 +52,7 @@ If the topic is going to be consumed by a fixed number of consumers, you'll need
 
 **The most important rule is to measure the cluster throughput in consumers and producers and review if we need to improve our system.**
 
-
+![kafkareplicationfactor](art/kafkaReplicationFactor.png)
 
 * **Why the replication factor is so important for us?**
 
