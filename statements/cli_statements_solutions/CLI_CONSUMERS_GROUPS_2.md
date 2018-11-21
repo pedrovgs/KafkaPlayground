@@ -7,7 +7,7 @@ Using the already solved exercises from the previous sections we will execute th
 * Get all the consumer groups created in the Kafka environment.
 
 ```
-kafka-consumer-groups --bootstrap-server localhost:29092 --list
+???
 ```
 
 **Important note:** You'll see how there are groups you dind't created. This is because Kafka creates the group using a random id when you start a consumer without a group.
@@ -15,7 +15,7 @@ kafka-consumer-groups --bootstrap-server localhost:29092 --list
 * Describe the information of the consumer group "my-app" you created in the previous exercise.
 
 ```
-kafka-consumer-groups --bootstrap-server localhost:29092 --group my-app --describe
+???
 ```
 
 **Important note:** The result of this command execution let you identify which consumer is reading from which partition and the host IP.
@@ -29,13 +29,13 @@ kafka-consumer-groups --bootstrap-server localhost:29092 --group my-app --descri
 * Delete the group "my-app-2".
 
 ```
-kafka-consumer-groups --bootstrap-server localhost:29092 --group my-app --delete
+???
 ```
 
 * Reset the group "my-app" offset.
 
 ```
-kafka-consumer-groups --bootstrap-server localhost:29092 --group my-app --all-topics --reset-offsets --to-earliest --execute
+???
 ```
 
 The output shows the new offsets per topci and partitions. If we start consuming topics again using the param ``--from-beginning`` we'll se messages already consumed before.

@@ -5,34 +5,24 @@ First of all, we need to initialize the Kafka cluster. From the ``docker`` folde
 * Create the named "new-users" with at least 3 partitions.
 
 ```
-kafka-topics --zookeeper localhost:2181 --topic new-users --create --partitions 3 --replication-factor 1
+???
 ```
 * From one terminal start consuming the topic using the group with id "my-app".
 
 ```
-kafka-console-consumer --bootstrap-server localhost:29092 --topic new-users --group my-app
+???
 ```
 
 * From another terminal start consuming the topic using the group with id "my-app".
 
 ```
-kafka-console-consumer --bootstrap-server localhost:29092 --topic new-users --group my-app
+???
 ```
 
 * Produce 10 messages for the topic "users".
 
 ```
-kafka-console-producer --broker-list 127.0.0.1:29092 --topic new-users
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+???
 ```
 
 * Can you see all the messages in both consumers?
@@ -60,9 +50,7 @@ There are some consumers that doesn't receive any message.
 * Start a consumer for that topic in a new group, using the param ``--from-beginning``, close it and start it again. Do you see something weird?
 
 ```
-kafka-console-consumer --bootstrap-server localhost:29092 --topic new-users --group my-app-2 --from-beginning
-CNTRL + C
-kafka-console-consumer --bootstrap-server localhost:29092 --topic new-users --group my-app-2 --from-beginning
+???
 ```
 
 The second time the consumer is started does not show any message.

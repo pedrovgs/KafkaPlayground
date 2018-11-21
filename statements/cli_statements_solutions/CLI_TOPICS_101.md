@@ -5,37 +5,37 @@ First of all, we need to initialize the Kafka cluster. From the ``docker`` folde
 * Create the named: "topic-1"
 
 ```
-kafka-topics --zookeeper localhost:2181 --topic topic-1 --create --partitions 4 --replication-factor 1
+???
 ```
 
 * Create the named: "topic-2"
 
 ```
-kafka-topics --zookeeper localhost:2181 --topic topic-2 --create --partitions 4 --replication-factor 1
+???
 ```
 
 * List all the topics created.
 
 ```
-kafka-topics --zookeeper localhost:2181 --list
+???
 ```
 
 * Delete the last topic created.
 
 ```
-kafka-topics --zookeeper localhost:2181 --topic topic-2 --delete
+???
 ```
 
 * Describe the first topic created.
 
 ```
-kafka-topics --zookeeper localhost:2181 --topic topic-1 --describe
+???
 ```
 
 * List all the topics created again.
 
 ```
-kafka-topics --zookeeper localhost:2181 --list
+???
 ```
 
 There are some details to keep in mind while resolving this exercise:
