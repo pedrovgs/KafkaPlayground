@@ -30,14 +30,5 @@ object TheFlashSaver {
                                       elasticIndex = "located_tweets")
   )
 
-  def main(args: Array[String]): Unit = {
-    consumeKafkaMessages()
-  }
-
-  @tailrec
-  private def consumeKafkaMessages(): Unit = {
-    locatedTweetsConsumer.poll()
-    notLocatedTweetsConsumer.poll()
-    consumeKafkaMessages()
-  }
+  def main(args: Array[String]): Unit = ???
 }

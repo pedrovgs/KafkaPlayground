@@ -9,11 +9,6 @@ object TheFlashSeeker {
     brokerAddress = "localhost:29092"
   )
 
-  def main(args: Array[String]): Unit = {
-    val streamingClient = TwitterStreamingClient()
-    streamingClient.filterStatuses(tracks = Seq("flash")) {
-      case tweet: Tweet => producer(tweet)
-    }
-  }
+  def main(args: Array[String]): Unit = ???
 
 }

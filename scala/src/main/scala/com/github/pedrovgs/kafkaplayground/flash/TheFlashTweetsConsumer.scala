@@ -29,16 +29,6 @@ class TheFlashTweetsConsumer(private val brokerAddress: String,
   )
   consumer.subscribe(List(topic).asJava)
 
-  def poll(): Unit = {
-    println(s"Polling messages from the kafka consumer at topic: $topic.")
-    val records = consumer.poll(10.seconds.toMillis)
-    println(s"We've fetched ${records.count()} records.")
-    records.forEach { record =>
-      val id      = s"${record.topic()}_${record.partition()}_${record.offset()}"
-      val content = record.value()
-      println(s"Saving content from the topic $topic content into elastic: $content")
-      elasticClient.insertOrUpdate(id, content)
-    }
-  }
+  def poll(): Unit = ???
 
 }

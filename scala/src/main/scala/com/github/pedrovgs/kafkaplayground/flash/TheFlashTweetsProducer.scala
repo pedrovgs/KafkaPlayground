@@ -29,39 +29,10 @@ class TheFlashTweetsProducer(private val brokerAddress: String,
     ).withProperty("compression.type", "snappy")
   )
 
-  def apply(tweet: Tweet): Future[Tweet] = {
-    println(s"Sending tweet to the associated topic: ${tweet.text}")
-    tweet.geo match {
-      case Some(coordinates) => sendGeoLocatedFlashAdvertisement(tweet, coordinates)
-      case _                 => sendUnknownLocationFlashAdvertisement(tweet)
-    }
-  }
+  def apply(tweet: Tweet): Future[Tweet] = ???
 
-  private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] =
-    sendRecordToProducer(
-      topic = locatedFlashTopic,
-      message = s"""
-           |{
-           |  "latitude": ${coordinates.coordinates.head},
-           |  "longitude": ${coordinates.coordinates.last},
-           |  "id": "${tweet.id}",
-           |  "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
-           |}
-       """.stripMargin
-    ).map(_ => tweet)
+  private def sendGeoLocatedFlashAdvertisement(tweet: Tweet, coordinates: Geo): Future[Tweet] = ???
 
-  private def sendUnknownLocationFlashAdvertisement(tweet: Tweet): Future[Tweet] =
-    sendRecordToProducer(
-      topic = unknownLocationFlashTopic,
-      message = s"""
-           |{
-           |  "message": "${StringEscapeUtils.escapeJava(tweet.text)}"
-           |}
-        """.stripMargin
-    ).map(_ => tweet)
+  private def sendUnknownLocationFlashAdvertisement(tweet: Tweet): Future[Tweet] = ???
 
-  private def sendRecordToProducer(topic: String, message: String) =
-    flashProducer.send(
-      KafkaProducerRecord[String, String](topic = topic, value = message)
-    )
 }
