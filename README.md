@@ -205,7 +205,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beg
 
 ## Running Scala code
 
-Inside the scala folder you'll find a sbt project using Kafka intensively. This project uses a Twitter client as data source so configuring the access to this platform throug this API is needed. To do this you only need to create a Twitter app from [this page](https://apps.twitter.com) and add a ``src/main/resources/application.conf`` file to your ``scala`` folder with the following content:
+Inside the scala folder you'll find a sbt project using Kafka intensively. This project uses a Twitter client as data source so configuring the access to this platform throug this API is needed. A Elasticsearch client is also configured so you'll need to update your configuration file to point at a Elasticsearch instance. To do this you only need to create a Twitter app from [this page](https://apps.twitter.com) and add a ``src/main/resources/application.conf`` file to your ``scala`` folder with the following content. For elasticsearch you can use bonsai.io free instances if you want.
 
 ```
 twitter {
@@ -217,6 +217,12 @@ twitter {
     key = "my-access-key"
     secret = "my-access-secret"
   }
+}
+
+elasticsearch {
+  host = "elastic-host"
+  user = "elastic-user"
+  pass = "elastci-pass"
 }
 ```
 
